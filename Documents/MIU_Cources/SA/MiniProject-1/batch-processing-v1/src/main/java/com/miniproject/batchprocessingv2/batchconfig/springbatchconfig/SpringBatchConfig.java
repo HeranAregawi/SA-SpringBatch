@@ -1,4 +1,4 @@
-package com.miniproject.batchprocessingv2.config;
+package com.miniproject.batchprocessingv2.batchconfig.springbatchconfig;
 
 import com.miniproject.batchprocessingv2.domain.Student;
 import com.miniproject.batchprocessingv2.repository.StudentRepository;

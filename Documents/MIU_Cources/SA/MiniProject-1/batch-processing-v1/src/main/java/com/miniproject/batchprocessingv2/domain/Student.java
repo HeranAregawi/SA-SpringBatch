@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Entity
 @Table(name = "STUDENTS_INFO")
@@ -30,7 +29,7 @@ public class Student {
     private Double gpa;
 
     @Column(name = "DOB")
-    private int dob;
+    private String dob;
 
 
 }
