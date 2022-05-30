@@ -1,6 +1,7 @@
 version: '2.5'
 services:
   mysql-container:
+    platform: linux/x86_64
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
@@ -9,11 +10,12 @@ services:
     ports:
       - "3307:3306"
   springbatch-app:
-    image: 212729/springbatch-app:v4
+    image: springbatch-app
+    restart: always
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql:/mysql-container:3306/springbatch
+#      SPRING_DATASOURCE_URL: jdbc:mysql:/mysql-container:3306/springbatch
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "root"
       spring.jpa.properties.hibernate.dialect": org.hibernate.dialect.MySQL5Dialect
@@ -23,6 +25,5 @@ services:
       dockerfile: "Dockerfile"
     depends_on:
       - mysql-container
-#    links:
-#      - mysql-container
+
 
