@@ -1,0 +1,89 @@
+**Spring-Batch Job**
+
+Group-Members
+1, Heran Aregawi
+2, Sopheary Rin
+Usage notes
+
+***********************************
+-This application is a batch job ,that reads a CSV file and writes its contents into Mysql DB after performing some conversion
+,In our case change the age of the students it to date of birth.
+
+-Only admin can access the service.
+
+***********************************
+Dockerizing the app
+
+Test:
+$ docker-machine --version
+$ docker-compose --version
+
+**Without using Docker Compose**
+$ docker pull mysql  - pull mongodb image from docker hub
+$ docker run -d -p 3307:3306 --name mysql-container mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=springbatch mysql
+$ docker build -t springbatch-app:v3
+$ docker hub springbatch-app:v3 212729/springbatch-app:v3 - tag local image for pushing to docker hub
+$ docker push 212729/springbatch-app:v3 - push image to docker hub
+$ docker run -p 8080:8080 --name springbatch-app --link mysql-container:mysql -d 212729/springbatch-app:v4
+
+**Docker Compose**
+Take a look at the docker-compose.yml file:
+version: '2.5'
+services:
+  mysql-container:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=springbatch
+    ports:
+      - "3307:3306"
+  springbatch-app:
+    image: 212729/springbatch-app:v4
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql:/mysql-container:3306/springbatch
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root"
+      spring.jpa.properties.hibernate.dialect": org.hibernate.dialect.MySQL5Dialect
+      spring.jpa.hibernate.ddl-auto": "create"
+    build:
+      context: "./"
+      dockerfile: "Dockerfile"
+    depends_on:
+      - mysql-container
+
+
+Now, to get the containers running, build the images and then start the services:
+$ docker-compose build
+$ docker-compose up -d
+To view the logs:
+$ docker-compose logs
+Open your browser and navigate to the IP address associated with Docker Machine.
+
+***********************************
+
+-Then go to localhost:8080/api/login(Post), insert username and password in the body in postman.
+-usernames and passwords and their role are:-
+
+  Username       Password       Role
+1,Heran           123           Both user and Admin so that can access the app
+2,Sopheary        123           user
+
+-Then token will be generated
+-By inserting the generated token in Authorization, Bearer token
+-The User can only access localhost:8080/api/users/**
+-The admin can create user using
+localhost:8080/api/users/
+-The admin can access the job-batch app using
+localhost:8080/jobs/students/ (Post) first then localhost:8080/jobs/students/ (Get) to fetch converted data from database
+
+
+
+
+
+
+
+
+
